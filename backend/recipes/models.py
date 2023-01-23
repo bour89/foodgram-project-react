@@ -69,7 +69,7 @@ class Recipe(models.Model):
         verbose_name='Изображение'
     )
     text = models.TextField(
-        verbose_name='Описание Рецепта'
+        verbose_name='Описание рецепта'
     )
     ingredients = models.ManyToManyField(
         Ingredient,
@@ -155,7 +155,7 @@ class FavoriteRecipe(models.Model):
     )
 
     class Meta:
-        verbose_name_plural = 'Избранные рецепты'
+        verbose_name = 'Избранные рецепты'
         constraints = [
             models.UniqueConstraint(
                 fields=['user', 'recipe'],
