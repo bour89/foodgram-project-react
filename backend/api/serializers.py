@@ -145,16 +145,14 @@ class RecipeGetSerializer(serializers.ModelSerializer):
         if not request.user.is_authenticated:
             return False
         return FavoriteRecipe.objects.filter(
-            user=request.user, recipe=obj
-        ).exists()
+            user=request.user, recipe=obj).exists()
 
     def get_is_in_shopping_cart(self, obj):
         request = self.context.get('request')
         if not request.user.is_authenticated:
             return False
         return ShoppingCart.objects.filter(
-            user=request.user, recipe=obj
-        ).exists()
+            user=request.user, recipe=obj).exists()
 
 
 class ShortRecipeSerializer(serializers.ModelSerializer):
@@ -220,6 +218,7 @@ class IsSubscribeSerializer(serializers.ModelSerializer):
     def get_is_subscribed(self, obj):
         request = self.context.get('request')
         if request and hasattr(request, 'user'):
-            return (request.user.is_authenticated and request.user.follower.filter(follow=obj)
+            return (request.user.is_authenticated and
+                    request.user.follower.filter(follow=obj)
                     .exists())
         return False
