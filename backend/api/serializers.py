@@ -1,4 +1,3 @@
-import webcolors
 from django.core.validators import MinValueValidator
 from django.db import transaction
 from django.shortcuts import get_object_or_404
@@ -9,16 +8,7 @@ from rest_framework import serializers
 from users.models import Follow, User
 from users.serializers import CurrentUserSerializer
 
-
-class HexToNameColor(serializers.Field):
-    def to_representation(self, value):
-        return value
-
-    def to_internal_value(self, data):
-        try:
-            return webcolors.hex_to_name(data)
-        except ValueError:
-            raise serializers.ValidationError('Для этого цвета нет имени')
+from .fields import HexToNameColor
 
 
 class TagSerializers(serializers.ModelSerializer):
@@ -103,23 +93,30 @@ class RecipePostSerializer(serializers.ModelSerializer):
         return recipe
 
     @transaction.atomic
-    def update(self, instance, validated_data):
-        instance.name = validated_data.get('name', instance.name)
-        instance.image = validated_data.get('image', instance.image)
-        instance.text = validated_data.get('text', instance.text)
-        instance.cooking_time = validated_data.get(
-            'cooking_time',
-            instance.cooking_time
-        )
-        instance.tags.clear()
-        instance.ingredients.clear()
-        IngredientRecipe.objects.filter(recipe=instance).delete()
+#    def update(self, instance, validated_data):
+#        instance.name = validated_data.get('name', instance.name)
+#        instance.image = validated_data.get('image', instance.image)
+#        instance.text = validated_data.get('text', instance.text)
+#        instance.cooking_time = validated_data.get(
+#            'cooking_time',
+#            instance.cooking_time
+#        )
+#        instance.tags.clear()
+#        instance.ingredients.clear()
+#        IngredientRecipe.objects.filter(recipe=instance).delete()
+#        ingredients = validated_data.pop('ingredients')
+#        tags = validated_data.pop('tags')
+#        for tag in tags:
+#            instance.tags.add(get_object_or_404(Tag, pk=tag.id))
+#        self.add_ingredients(instance, ingredients)
+#        return super().update(instance, validated_data)
+    def update(self, recipe, validated_data):
         ingredients = validated_data.pop('ingredients')
-        tags = validated_data.pop('tags')
-        for tag in tags:
-            instance.tags.add(get_object_or_404(Tag, pk=tag.id))
-        self.add_ingredients(instance, ingredients)
-        return super().update(instance, validated_data)
+        tags_data = validated_data.pop('tags')
+        super().update(recipe, validated_data)
+        recipe.tags.set(tags_data)
+        recipe.ingredients.set(ingredients)
+        return recipe
 
 
 class RecipeGetSerializer(serializers.ModelSerializer):
