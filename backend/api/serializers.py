@@ -93,23 +93,6 @@ class RecipePostSerializer(serializers.ModelSerializer):
         return recipe
 
     @transaction.atomic
-#    def update(self, instance, validated_data):
-#        instance.name = validated_data.get('name', instance.name)
-#        instance.image = validated_data.get('image', instance.image)
-#        instance.text = validated_data.get('text', instance.text)
-#        instance.cooking_time = validated_data.get(
-#            'cooking_time',
-#            instance.cooking_time
-#        )
-#        instance.tags.clear()
-#        instance.ingredients.clear()
-#        IngredientRecipe.objects.filter(recipe=instance).delete()
-#        ingredients = validated_data.pop('ingredients')
-#        tags = validated_data.pop('tags')
-#        for tag in tags:
-#            instance.tags.add(get_object_or_404(Tag, pk=tag.id))
-#        self.add_ingredients(instance, ingredients)
-#        return super().update(instance, validated_data)
     def update(self, recipe, validated_data):
         ingredients = validated_data.pop('ingredients')
         tags_data = validated_data.pop('tags')
