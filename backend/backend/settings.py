@@ -9,7 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY', default='aui+cr_0o2#2t-mih*m$')
 
-DEBUG = True
+DEBUG = FALSE
 
 ALLOWED_HOSTS = [
     'localhost',

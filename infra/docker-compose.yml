@@ -8,14 +8,14 @@ services:
       - ./.env  
 
   frontend:
-    image: denis3232/foodgram_frontend:latest    
+    image: bour89/foodgram_frontend:latest    
     volumes:
       - ../frontend/:/app/result_build/
     depends_on:
       - backend
 
   backend:
-    image: denis3232/foodgram_back:latest
+    image: bour89/foodgram_back:latest
     restart: always
     volumes:
       - static_value:/app/static/
