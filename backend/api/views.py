@@ -10,13 +10,12 @@ from rest_framework.permissions import (IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from users.models import Follow, User
 
 from . import serializers
 from .filters import Filter
 from .pagination import LimitPagination
 from .permissions import IsAuthorOrAdminPermission
-
+from users.models import Follow, User
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
     """Тэги"""
