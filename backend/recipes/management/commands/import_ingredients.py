@@ -11,7 +11,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         filepath = os.path.join(
-            settings.BASE_DIR, '..', 'data', 'ingredients.json'
+            settings.BASE_DIR, 'data', 'ingredients.json'
         )
 
         with open(filepath, encoding='utf-8') as ingredients_file:

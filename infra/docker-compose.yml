@@ -15,7 +15,7 @@ services:
       - backend
 
   backend:
-    image: bour89/foodgram_back:latest
+    image: bour89/foodgram_backend:latest
     restart: always
     volumes:
       - static_value:/app/static/
