@@ -198,7 +198,7 @@ class IsSubscribeSerializer(serializers.ModelSerializer):
     def get_is_subscribed(self, obj):
         request = self.context.get('request')
         if request and hasattr(request, 'user'):
-            return (request.user.is_authenticated and
-                    request.user.follower.filter(follow=obj)
+            return (request.user.is_authenticated
+                    and request.user.follower.filter(follow=obj)
                     .exists())
         return False

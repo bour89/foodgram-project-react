@@ -3,7 +3,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-env_path = Path('../infra') /'.env'
+env_path = Path('../infra') / '.env'
 load_dotenv(dotenv_path=env_path)
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -67,7 +67,7 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': os.getenv('DB_ENGINE', 
+        'ENGINE': os.getenv('DB_ENGINE',
                             default='django.db.backends.postgresql'
                             ),
         'NAME': os.getenv('DB_NAME', default='postgres'),

@@ -17,6 +17,7 @@ from recipes.models import (FavoriteRecipe, Ingredient, IngredientRecipe,
                             Recipe, ShoppingCart, Tag)
 from users.models import Follow, User
 
+
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
     """Тэги"""
     queryset = Tag.objects.all()
