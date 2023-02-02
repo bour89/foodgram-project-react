@@ -1,14 +1,11 @@
 version: '3.3'
 services:
   db:
-    image: postgres:14.6
-    environment:
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_DB=postgres
-      - PGDATA=/var/lib/postgresql/data/pgdata
+    image: postgres:13.0-alpine
     volumes:
       - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - ./.env  
 
   frontend:
     image: bour89/foodgram_frontend:latest    
