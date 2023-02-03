@@ -14,7 +14,7 @@ DEBUG = False
 
 ALLOWED_HOSTS = [
     'localhost',
-    '130.193.41.104'
+    '158.160.13.156'
     '*'
 ]
 
