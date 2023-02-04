@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from . import serializers
-from .filters import Filter
+from .filters import IngredientSearchFilter, RecipeFilter
 from .pagination import LimitPagination
 from .permissions import IsAuthorOrAdminPermission
 from recipes.models import (FavoriteRecipe, Ingredient, IngredientRecipe,
@@ -29,7 +29,7 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     """Ингредиенты"""
     queryset = Ingredient.objects.all()
     serializer_class = serializers.IngredientSerializer
-    filter_backends = (filters.SearchFilter, )
+    filter_backends = (IngredientSearchFilter, )
     search_fields = ('^name',)
     pagination_class = None
 
@@ -49,7 +49,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     pagination_class = LimitPagination
     serializer_class = serializers.RecipePostSerializer
     filter_backends = (DjangoFilterBackend,)
-    filterset_class = Filter
+    filterset_class = RecipeFilter
 
     def get_permissions(self):
         if self.action in ('update', 'destroy'):

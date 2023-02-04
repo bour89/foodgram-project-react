@@ -75,7 +75,7 @@ class Recipe(models.Model):
     ingredients = models.ManyToManyField(
         Ingredient,
         through='IngredientRecipe',
-        verbose_name='Ингридиенты',
+        verbose_name='Ингредиенты',
         related_name='ingredients'
     )
     tags = models.ManyToManyField(
@@ -133,7 +133,7 @@ class FavoriteRecipe(models.Model):
 
 
 class IngredientRecipe(models.Model):
-    """Количество ингридиентов в блюде."""
+    """Количество ингредиентов в блюде."""
 
     ingredient = models.ForeignKey(
         Ingredient,
@@ -154,7 +154,7 @@ class IngredientRecipe(models.Model):
     )
 
     class Meta:
-        verbose_name = 'Ингридиент'
+        verbose_name = 'Ингредиент'
         constraints = [
             models.UniqueConstraint(
                 fields=['ingredient', 'recipe'],
