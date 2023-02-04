@@ -49,7 +49,7 @@ class ListSubscriptions(generics.ListAPIView):
 class RecipeViewSet(viewsets.ModelViewSet):
     """Рецепты"""
     queryset = Recipe.objects.all()
-    permission_classes = IsAuthorOrReadOnly,
+    permission_classes = IsAuthorOrAdminPermission,
     pagination_class = LimitPagination
     serializer_class = serializers.RecipePostSerializer
     filter_backends = (DjangoFilterBackend,)
