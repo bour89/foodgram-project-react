@@ -28,9 +28,10 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     """Ингредиенты"""
     queryset = Ingredient.objects.all()
-    serializer_class = serializers.IngredientSerializer
-    filter_backends = (IngredientSearchFilter, )
-    search_fields = ('^name',)
+    permission_classes = AllowAny,
+    serializer_class = IngredientSerializer
+    filter_backends = [IngredientSearchFilter]
+    search_fields = '^name',
     pagination_class = None
 
 
