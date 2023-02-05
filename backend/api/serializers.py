@@ -81,24 +81,6 @@ class RecipePostSerializer(serializers.ModelSerializer):
             )
         IngredientRecipe.objects.bulk_create(ingredients_recipe)
 
-    @transaction.atomic
-    def create(self, validated_data):
-        ingredients = validated_data.pop('ingredients')
-        tags = validated_data.pop('tags')
-        recipe = Recipe.objects.create(**validated_data)
-        self.add_ingredients(recipe, ingredients)
-        for tag in tags:
-            recipe.tags.add(get_object_or_404(Tag, pk=tag.id))
-        recipe.save()
-        return recipe
-
-    def update(self, recipe, validated_data):
-        recipe.tags.clear()
-        IngredientRecipe.objects.filter(recipe=recipe).delete()
-        recipe.tags.set(validated_data.pop('tags'))
-        self.add_ingredients(recipe, validated_data.pop('ingredients'))
-        return super().update(recipe, validated_data)
-
     def validate(self, data):
         ingredients = self.initial_data.get('ingredients')
         if not ingredients:
@@ -124,6 +106,24 @@ class RecipePostSerializer(serializers.ModelSerializer):
                 })
         data['ingredients'] = ingredients
         return data
+
+    @transaction.atomic
+    def create(self, validated_data):
+        ingredients = validated_data.pop('ingredients')
+        tags = validated_data.pop('tags')
+        recipe = Recipe.objects.create(**validated_data)
+        self.add_ingredients(recipe, ingredients)
+        for tag in tags:
+            recipe.tags.add(get_object_or_404(Tag, pk=tag.id))
+        recipe.save()
+        return recipe
+
+    def update(self, recipe, validated_data):
+        recipe.tags.clear()
+        IngredientRecipe.objects.filter(recipe=recipe).delete()
+        recipe.tags.set(validated_data.pop('tags'))
+        self.add_ingredients(recipe, validated_data.pop('ingredients'))
+        return super().update(recipe, validated_data)
 
 
 class RecipeGetSerializer(serializers.ModelSerializer):
