@@ -88,7 +88,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 #            context={'request': request},
 #            partial=partial
 #        )
-        return Response(new_serializer.data, status=status.HTTP_200_OK)
+#        return Response(new_serializer.data, status=status.HTTP_200_OK)
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
