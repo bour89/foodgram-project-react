@@ -68,25 +68,25 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return serializers.RecipePostSerializer
 
     @staticmethod
-    def post_method(request, pk, serializers):
-        data = {'user': request.user.id, 'recipe': pk}
-        serializer = serializers(data=data, context={'request': request})
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+#    def post_method(request, pk, serializers):
+#        data = {'user': request.user.id, 'recipe': pk}
+#        serializer = serializers(data=data, context={'request': request})
+#        serializer.is_valid(raise_exception=True)
+#        serializer.save()
+#        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    def update(self, request, *args, **kwargs):
-        partial = kwargs.pop('partial', False)
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data,
-                                         partial=partial)
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-        recipe = get_object_or_404(Recipe, pk=serializer.data.get('id'))
-        new_serializer = serializers.RecipeGetSerializer(
-            recipe,
-            context={'request': request},
-            partial=partial
+#    def update(self, request, *args, **kwargs):
+#        partial = kwargs.pop('partial', False)
+#        instance = self.get_object()
+#        serializer = self.get_serializer(instance, data=request.data,
+#                                         partial=partial)
+#        serializer.is_valid(raise_exception=True)
+#        self.perform_update(serializer)
+#        recipe = get_object_or_404(Recipe, pk=serializer.data.get('id'))
+#        new_serializer = serializers.RecipeGetSerializer(
+#            recipe,
+#            context={'request': request},
+#            partial=partial
         )
         return Response(new_serializer.data, status=status.HTTP_200_OK)
 
