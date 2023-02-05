@@ -120,7 +120,7 @@ class RecipePostSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         ingredients_data = validated_data.pop('ingredients')
         tags_data = validated_data.pop('tags')
-        IngredientAmount.objects.filter(recipe=instance).delete()
+        IngredientRecipe.objects.filter(recipe=instance).delete()
         self.create_bulk_ingredients(instance, ingredients_data)
         instance.name = validated_data.pop('name')
         instance.text = validated_data.pop('text')
@@ -130,6 +130,7 @@ class RecipePostSerializer(serializers.ModelSerializer):
         instance.save()
         instance.tags.set(tags_data)
         return instance
+
 
 class RecipeGetSerializer(serializers.ModelSerializer):
     is_in_shopping_cart = serializers.SerializerMethodField(read_only=True)
