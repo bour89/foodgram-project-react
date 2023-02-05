@@ -67,7 +67,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return serializers.RecipeGetSerializer
         return serializers.RecipePostSerializer
 
-    @staticmethod
+#    @staticmethod
 #    def post_method(request, pk, serializers):
 #        data = {'user': request.user.id, 'recipe': pk}
 #        serializer = serializers(data=data, context={'request': request})
@@ -89,7 +89,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 #            partial=partial
 #        )
 #        return Response(new_serializer.data, status=status.HTTP_200_OK)
-
+#
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
