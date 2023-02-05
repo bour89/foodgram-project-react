@@ -1,6 +1,4 @@
 from django.core.validators import MinValueValidator
-from django.db import transaction
-from django.shortcuts import get_object_or_404
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 
@@ -91,13 +89,39 @@ class RecipePostSerializer(serializers.ModelSerializer):
             recipe.tags.add(get_object_or_404(Tag, pk=tag.id))
         recipe.save()
         return recipe
-
+        
     def update(self, recipe, validated_data):
         recipe.tags.clear()
         IngredientRecipe.objects.filter(recipe=recipe).delete()
         recipe.tags.set(validated_data.pop('tags'))
         self.add_ingredients(recipe, validated_data.pop('ingredients'))
         return super().update(recipe, validated_data)
+
+    def validate(self, data):
+        ingredients = self.initial_data.get('ingredients')
+        if not ingredients:
+            raise serializers.ValidationError({
+                'ingredients': 'Должен быть хотя бы один ингредиент'
+            })
+        ingredient_list = []
+        for ingredient_item in ingredients:
+            ingredient = get_object_or_404(
+                Ingredient,
+                id=ingredient_item['id']
+            )
+            if ingredient in ingredient_list:
+                raise serializers.ValidationError(
+                    'Ингредиенты должны быть уникальными'
+                )
+            ingredient_list.append(ingredient)
+            if int(ingredient_item['amount']) < 0:
+                raise serializers.ValidationError({
+                    'ingredients': (
+                        'Убедитесь, что количество ингредиентов больше 0'
+                    )
+                })
+        data['ingredients'] = ingredients
+        return data
 
 
 class RecipeGetSerializer(serializers.ModelSerializer):
