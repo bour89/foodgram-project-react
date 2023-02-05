@@ -1,4 +1,6 @@
 from django.core.validators import MinValueValidator
+from django.db import transaction
+from django.shortcuts import get_object_or_404
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 
@@ -79,14 +81,15 @@ class RecipePostSerializer(serializers.ModelSerializer):
             )
         IngredientRecipe.objects.bulk_create(ingredients_recipe)
 
+    @transaction.atomic
     def create(self, validated_data):
-        author = self.context.get('request').user
-        tags_data = validated_data.pop('tags')
-        ingredients_data = validated_data.pop('ingredients')
-        recipe = Recipe.objects.create(author=author, **validated_data)
+        ingredients = validated_data.pop('ingredients')
+        tags = validated_data.pop('tags')
+        recipe = Recipe.objects.create(**validated_data)
+        self.add_ingredients(recipe, ingredients)
+        for tag in tags:
+            recipe.tags.add(get_object_or_404(Tag, pk=tag.id))
         recipe.save()
-        recipe.tags.set(tags_data)
-        self.add_ingredients(recipe, ingredients_data)
         return recipe
 
     def update(self, recipe, validated_data):
