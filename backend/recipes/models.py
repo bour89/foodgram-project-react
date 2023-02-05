@@ -96,12 +96,6 @@ class Recipe(models.Model):
     class Meta:
         verbose_name = 'Рецепт'
         ordering = ['-pub_date']
-        constraints = [
-            models.UniqueConstraint(
-                fields=['author', 'name'],
-                name='unique_author_name'
-            )
-        ]
 
     def __str__(self):
         return f'{self.name}, {self.author}'
@@ -125,7 +119,7 @@ class FavoriteRecipe(models.Model):
             models.UniqueConstraint(
                 fields=['user', 'recipe'],
                 name='unique_favorite'
-            )
+            ),
         ]
 
     def __str__(self):
@@ -157,7 +151,7 @@ class IngredientRecipe(models.Model):
         verbose_name = 'Ингредиент'
         constraints = (
             models.UniqueConstraint(fields=['ingredient', 'recipe'],
-                                    name='unique_ingredients_recipes')
+                                    name='unique_ingredients_recipes'),
         )
 
     def __str__(self):
@@ -180,12 +174,12 @@ class ShoppingCart(models.Model):
 
     class Meta:
         verbose_name = 'Список покупок'
-        constraints = [
+        constraints = (
             models.UniqueConstraint(
                 fields=['user', 'recipe'],
-                name='unique_shoppingcart'
-            )
-        ]
+                name='unique_shoppingcart',
+            ),
+        )
 
     def __str__(self):
         return f'{self.user} добавил в избанное {self.recipe}'
