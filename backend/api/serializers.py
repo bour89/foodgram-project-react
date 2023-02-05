@@ -51,7 +51,7 @@ class AmountSerializer(serializers.ModelSerializer):
 
 class RecipePostSerializer(serializers.ModelSerializer):
     author = CurrentUserSerializer(read_only=True)
-    name = serializers.CharField())
+    name = serializers.CharField()
     image = Base64ImageField()
     tags = serializers.PrimaryKeyRelatedField(
         queryset=Tag.objects.all(),
