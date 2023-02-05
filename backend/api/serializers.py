@@ -1,4 +1,6 @@
 from django.core.validators import MinValueValidator
+from django.db import transaction
+from django.shortcuts import get_object_or_404
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 
@@ -89,7 +91,7 @@ class RecipePostSerializer(serializers.ModelSerializer):
             recipe.tags.add(get_object_or_404(Tag, pk=tag.id))
         recipe.save()
         return recipe
-        
+
     def update(self, recipe, validated_data):
         recipe.tags.clear()
         IngredientRecipe.objects.filter(recipe=recipe).delete()
