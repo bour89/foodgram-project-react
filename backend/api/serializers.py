@@ -107,22 +107,29 @@ class RecipePostSerializer(serializers.ModelSerializer):
 
     @transaction.atomic
     def create(self, validated_data):
-        ingredients = validated_data.pop('ingredients')
-        tags = validated_data.pop('tags')
-        recipe = Recipe.objects.create(**validated_data)
-        self.add_ingredients(recipe, ingredients)
-        for tag in tags:
-            recipe.tags.add(get_object_or_404(Tag, pk=tag.id))
+        ingredients_data = validated_data.pop('ingredients')
+        tags_data = validated_data.pop('tags')
+        author = self.context.get('request').user
+        recipe = Recipe.objects.create(author=author, **validated_data)
         recipe.save()
+        recipe.tags.set(tags_data)
+        self.create_bulk_ingredients(recipe, ingredients_data)
         return recipe
 
+    @transaction.atomic
     def update(self, recipe, validated_data):
-        recipe.tags.clear()
-        IngredientRecipe.objects.filter(recipe=recipe).delete()
-        recipe.tags.set(validated_data.pop('tags'))
-        self.add_ingredients(recipe, validated_data.pop('ingredients'))
-        return super().update(recipe, validated_data)
-
+        ingredients_data = validated_data.pop('ingredients')
+        tags_data = validated_data.pop('tags')
+        IngredientAmount.objects.filter(recipe=instance).delete()
+        self.create_bulk_ingredients(instance, ingredients_data)
+        instance.name = validated_data.pop('name')
+        instance.text = validated_data.pop('text')
+        if validated_data.get('image') is not None:
+            instance.image = validated_data.pop('image')
+        instance.cooking_time = validated_data.pop('cooking_time')
+        instance.save()
+        instance.tags.set(tags_data)
+        return instance
 
 class RecipeGetSerializer(serializers.ModelSerializer):
     is_in_shopping_cart = serializers.SerializerMethodField(read_only=True)
