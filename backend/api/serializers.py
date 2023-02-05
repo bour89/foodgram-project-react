@@ -51,6 +51,7 @@ class AmountSerializer(serializers.ModelSerializer):
 
 class RecipePostSerializer(serializers.ModelSerializer):
     author = CurrentUserSerializer(read_only=True)
+    name = serializers.CharField())
     image = Base64ImageField()
     tags = serializers.PrimaryKeyRelatedField(
         queryset=Tag.objects.all(),
@@ -107,29 +108,33 @@ class RecipePostSerializer(serializers.ModelSerializer):
 
     @transaction.atomic
     def create(self, validated_data):
-        ingredients_data = validated_data.pop('ingredients')
-        tags_data = validated_data.pop('tags')
-        author = self.context.get('request').user
-        recipe = Recipe.objects.create(author=author, **validated_data)
+        ingredients = validated_data.pop('ingredients')
+        tags = validated_data.pop('tags')
+        recipe = Recipe.objects.create(**validated_data)
+        self.add_ingredients(recipe, ingredients)
+        for tag in tags:
+            recipe.tags.add(get_object_or_404(Tag, pk=tag.id))
         recipe.save()
-        recipe.tags.set(tags_data)
-        self.create_bulk_ingredients(recipe, ingredients_data)
         return recipe
 
     @transaction.atomic
     def update(self, instance, validated_data):
-        ingredients_data = validated_data.pop('ingredients')
-        tags_data = validated_data.pop('tags')
+        instance.name = validated_data.get('name', instance.name)
+        instance.image = validated_data.get('image', instance.image)
+        instance.text = validated_data.get('text', instance.text)
+        instance.cooking_time = validated_data.get(
+            'cooking_time',
+            instance.cooking_time
+        )
+        instance.tags.clear()
+        instance.ingredients.clear()
         IngredientRecipe.objects.filter(recipe=instance).delete()
-        self.create_bulk_ingredients(instance, ingredients_data)
-        instance.name = validated_data.pop('name')
-        instance.text = validated_data.pop('text')
-        if validated_data.get('image') is not None:
-            instance.image = validated_data.pop('image')
-        instance.cooking_time = validated_data.pop('cooking_time')
-        instance.save()
-        instance.tags.set(tags_data)
-        return instance
+        ingredients = validated_data.pop('ingredients')
+        tags = validated_data.pop('tags')
+        for tag in tags:
+            instance.tags.add(get_object_or_404(Tag, pk=tag.id))
+        self.add_ingredients(instance, ingredients)
+        return super().update(instance, validated_data)
 
 
 class RecipeGetSerializer(serializers.ModelSerializer):
